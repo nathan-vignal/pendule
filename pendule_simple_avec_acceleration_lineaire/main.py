@@ -1,8 +1,14 @@
+import time
+from tkinter import *
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from math import *
+def createTranslation(tx, ty) :
+    matrice = [[1,0,0],[0,1,0],[tx,ty,1]]
+    return matrice
+
 class Pendule:
     def __init__(self, name, g, l, theta, masse, origine='not defined'):
         self.name = name
@@ -15,7 +21,7 @@ class Pendule:
         if origine == 'not defined':  # permet un parametre par défaut pour origine en fonction de l
             self.origine = (0, l)
         else:
-            self.origine = origine
+            self.origine = (origine,l)
 
     def show(self):
         print('----' + self.name + '----')
@@ -38,8 +44,11 @@ class Pendule:
         rotation = [((cos(t)), (-sin(t))), ((sin(t)), (cos(t)))]
         result = self.multiplication(rotation, dernierCoordonne)
         result = ((result[0] - self.origine[0]),
-                  (result[1] + self.origine[1]))  ##coordonne par rapport à l'origine du graphique
+                  (result[1] + self.origine[1]), 1)  ##coordonne par rapport à l'origine du graphique
         return result
+    #def tranlation(self,tx,ty):
+
+
 
     def simulate(self, tempsEntreImages, ):  # but : renvoyer une liste avec les positions en fonctions du temps
 
@@ -49,8 +58,8 @@ class Pendule:
         upperPreviousTheta = 9999
 
         # premiere position
-        liste = [(0, 0)]
-        liste[0] = (sin(actualTheta) * self.l, (1 - cos(actualTheta)) * self.l)
+        liste = [(0, 0,1)]
+        liste[0] = (sin(actualTheta) * self.l, (1 - cos(actualTheta)) * self.l, 1)
         while (abs(upperPreviousTheta - upperTheta) > 0.1):
             # BLOC ALLER
             if (liste[len(liste) - 1][0] > 0):
@@ -63,7 +72,7 @@ class Pendule:
             temps = tempsEntreImages
             vitesse = 0
             while (1) :
-                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (0.1 / (self.masse * (
+                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (1 / (self.masse * (
                         self.l * self.l))) * vitesse) * tempsEntreImages)  # la valeur en dur est k le coefficient de frottement
                 actualTheta += vitesse * tempsEntreImages
                 delta = actualTheta - previousTheta
@@ -75,7 +84,7 @@ class Pendule:
                     break
                 else:
                     liste.append(self.rotate(delta, liste[len(liste) - 1]))
-
+        #animation boule
 
 
 
@@ -103,23 +112,52 @@ class Simulation:
             self.listeDeplacement.append(self.pendules[j].simulate(self.tempsEntreImages))
 
     def show(self):
+        #settings
+        width = 1200
+        height= 800
+        decalageX = width*0.5
+        decalageY = height*0.75
+        size = 30
+        zoom = 150
+        main = Tk()
+        main.geometry("1200x800+220+100")
+        main.title("Pendule")
+        canvas = Canvas(main, width=width, height=height)
+        canvas.pack()
         for k in range(0, len(self.pendules), 1):
-            listeX = []
-            listeY = []
-            for i in range(0, len(self.listeDeplacement[k])-1, 1):
-                listeX.append(self.listeDeplacement[k][i][0])
-                listeY.append(self.listeDeplacement[k][i][1])
-            print('nombre de point affiché : '+ str(len(listeX)))
-            plt.plot(listeX,listeY,'ro')
-            plt.show()
-''' self.animation([listeX,listeX])
-    def animation(self, liste):
-        fig = plt.figure()
-        ax = plt.axes(xlim=(-1, 1), ylim=(0, 1))
-        animation = FuncAnimation(fig, interval=10)
-'''
-#https://brushingupscience.com/2016/06/21/matplotlib-animations-the-easy-way/
+            origineX = self.listeDeplacement[k][0][0]+cos(-2*self.pendules[k].theta)*self.pendules[k].l
+            origineY = self.listeDeplacement[k][0][1]+sin(-2*self.pendules[k].theta)*self.pendules[k].l
+            fixation = canvas.create_oval(origineX*zoom +decalageX,
+                               -origineY*zoom +decalageY,
+                               origineX*zoom+size/1.5 +decalageX,
+                               -origineY*zoom+size/1.5 +decalageY)
+            canvas.update()
+            time.sleep(1)
+        for k in range(0, len(self.pendules), 1):
 
+            for i in range(0, len(self.listeDeplacement[k])-1, 1):
+                point = canvas.create_oval(self.listeDeplacement[k][i][0] * zoom +decalageX,
+                                              -self.listeDeplacement[k][i][1] * zoom +decalageY,
+                                              self.listeDeplacement[k][i][0] * zoom + decalageX + size,
+                                              -self.listeDeplacement[k][i][1] * zoom + decalageY + size,
+                                              fill="black")
+
+                lien = canvas.create_line((origineX*zoom +decalageX+origineX*zoom+size/1.5 +decalageX)/2 ,
+                                          (-origineY*zoom +decalageY+-origineY*zoom+size/1.5 +decalageY)/2,
+                                          (self.listeDeplacement[k][i][0] * zoom +decalageX +
+                                          self.listeDeplacement[k][i][0] * zoom + decalageX + size)/2,
+                                          (-self.listeDeplacement[k][i][1] * zoom + decalageY+
+                                          -self.listeDeplacement[k][i][1] * zoom + decalageY + size)/2)
+                canvas.update()
+                time.sleep(0.01)
+                canvas.delete(point)
+                canvas.delete(lien)
+            canvas.delete(fixation)
+
+        main.mainloop()
+
+
+#https://brushingupscience.com/2016/06/21/matplotlib-animations-the-easy-way/
 
 
 
@@ -129,9 +167,11 @@ class Simulation:
 
 
 # création des pendules
+# name, g, l, theta, masse, origine=(0,l)):
 terre = Pendule('terre', 9.81, 1, pi / 2, 1)
+mars = Pendule('terre', 3.711, 1, pi / 2, 1)
 # création de la simulation
-simulation = Simulation([terre], 0.1)
+simulation = Simulation([mars,terre], 0.01)
 
 simulation.recap()
 simulation.simulate()
