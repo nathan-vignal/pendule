@@ -32,20 +32,39 @@ class Pendule:
         print
         print
 
-    def multiplication(self, matrix, Coordonne):
-        result = (matrix[0][0] * Coordonne[0] + matrix[0][1] * Coordonne[1]), (
-                matrix[1][0] * Coordonne[0] + matrix[1][1] * Coordonne[1])
-        return result
+    def multiplication(MatriceA, MatriceB):
+        matriceC = [[0]*(len(MatriceB[0]))]
+
+        if len(MatriceA) != len(MatriceB[0]):
+            print('Impossible de multiplier les deux matrices')
+            return
+
+        for i in range(len(MatriceB)):
+            for j in range(len(MatriceA[0])):
+                for k in range(len(MatriceA)):
+                    matriceC[i][j] += MatriceB[i][k] * MatriceA[k][j]
+
+        return matriceC
+
+
 
     def rotate(self, t, dernierCoordonne):
         # parametre
-        dernierCoordonne = (dernierCoordonne[0] - self.origine[0],
-                            dernierCoordonne[1] - self.origine[1])  # coordonne par rapport à l'origine du pendule
-        rotation = [((cos(t)), (-sin(t))), ((sin(t)), (cos(t)))]
-        result = self.multiplication(rotation, dernierCoordonne)
-        result = ((result[0] - self.origine[0]),
-                  (result[1] + self.origine[1]), 1)  ##coordonne par rapport à l'origine du graphique
-        return result
+        print(self.origine[1])
+        translation = [[1,0,- self.origine[0]],
+                       [0,1,- self.origine[1]],
+                       [0,0,1]]
+        dernierCoordonne = Pendule.multiplication( translation,dernierCoordonne)
+
+        rotation = [[(cos(t)), (sin(t)),0], [-sin(t), (cos(t)),0], [0,0,1]]
+        dernierCoordonne = Pendule.multiplication(rotation, dernierCoordonne)
+
+        translation = [[1, 0,  self.origine[0]],
+                       [0, 1,  self.origine[1]],
+                       [0, 0, 1]]
+        dernierCoordonne  = Pendule.multiplication( translation,dernierCoordonne)
+
+        return dernierCoordonne[0]
     #def tranlation(self,tx,ty):
 
 
@@ -58,13 +77,22 @@ class Pendule:
         upperPreviousTheta = 9999
 
         # premiere position
-        liste = [(0, 0,1)]
+        liste = [[0, 0,1]]
         liste[0] = (sin(actualTheta) * self.l, (1 - cos(actualTheta)) * self.l, 1)
+        if (liste[len(liste) - 1][0] > 0):   #initialise pendule à droite du coté opposé
+            penduleADroite = 0
+        else:
+            penduleADroite = 1
         while (abs(upperPreviousTheta - upperTheta) > 0.1):
+
             # BLOC ALLER
             if (liste[len(liste) - 1][0] > 0):
+                if(penduleADroite):
+                    break
                 penduleADroite = 1
             else:
+                if (not penduleADroite):
+                    break
                 penduleADroite = 0
 
             upperPreviousTheta = upperTheta
@@ -72,23 +100,23 @@ class Pendule:
             temps = tempsEntreImages
             vitesse = 0
             while (1) :
-                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (1 / (self.masse * (
+                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (1/ (self.masse * (
                         self.l * self.l))) * vitesse) * tempsEntreImages)  # la valeur en dur est k le coefficient de frottement
                 actualTheta += vitesse * tempsEntreImages
                 delta = actualTheta - previousTheta
                 previousTheta = actualTheta
 
                 temps += tempsEntreImages
-                if (not (((vitesse <= 0) and penduleADroite) or ((vitesse >= 0) and (not penduleADroite)))):
+                if (not (((vitesse <= -0.05) and penduleADroite) or ((vitesse > 0.05) and (not penduleADroite)))):
                     upperTheta = actualTheta
                     break
                 else:
-                    liste.append(self.rotate(delta, liste[len(liste) - 1]))
+                    liste.append(self.rotate(delta, [liste[len(liste) - 1]]))
         #animation boule
 
 
 
-            # FIN BLOC ALLER
+        # FIN BLOC ALLER
 
         return liste
 
@@ -128,26 +156,25 @@ class Simulation:
             origineX = self.listeDeplacement[k][0][0]+cos(-2*self.pendules[k].theta)*self.pendules[k].l
             origineY = self.listeDeplacement[k][0][1]+sin(-2*self.pendules[k].theta)*self.pendules[k].l
             fixation = canvas.create_oval(origineX*zoom +decalageX,
-                               -origineY*zoom +decalageY,
-                               origineX*zoom+size/1.5 +decalageX,
-                               -origineY*zoom+size/1.5 +decalageY)
+                                          -origineY*zoom +decalageY,
+                                          origineX*zoom+size/1.5 +decalageX,
+                                          -origineY*zoom+size/1.5 +decalageY)
             canvas.update()
-            time.sleep(1)
         for k in range(0, len(self.pendules), 1):
 
             for i in range(0, len(self.listeDeplacement[k])-1, 1):
                 point = canvas.create_oval(self.listeDeplacement[k][i][0] * zoom +decalageX,
-                                              -self.listeDeplacement[k][i][1] * zoom +decalageY,
-                                              self.listeDeplacement[k][i][0] * zoom + decalageX + size,
-                                              -self.listeDeplacement[k][i][1] * zoom + decalageY + size,
-                                              fill="black")
+                                           -self.listeDeplacement[k][i][1] * zoom +decalageY,
+                                           self.listeDeplacement[k][i][0] * zoom + decalageX + size,
+                                           -self.listeDeplacement[k][i][1] * zoom + decalageY + size,
+                                           fill="black")
 
                 lien = canvas.create_line((origineX*zoom +decalageX+origineX*zoom+size/1.5 +decalageX)/2 ,
                                           (-origineY*zoom +decalageY+-origineY*zoom+size/1.5 +decalageY)/2,
                                           (self.listeDeplacement[k][i][0] * zoom +decalageX +
-                                          self.listeDeplacement[k][i][0] * zoom + decalageX + size)/2,
+                                           self.listeDeplacement[k][i][0] * zoom + decalageX + size)/2,
                                           (-self.listeDeplacement[k][i][1] * zoom + decalageY+
-                                          -self.listeDeplacement[k][i][1] * zoom + decalageY + size)/2)
+                                           -self.listeDeplacement[k][i][1] * zoom + decalageY + size)/2)
                 canvas.update()
                 time.sleep(0.01)
                 canvas.delete(point)
@@ -161,9 +188,9 @@ class Simulation:
 
 
 
-        # print(point(self.listeDeplacement[k]))
-        #animation = animate([point(j) for j in self.listeDeplacement[0]], xmin=-1.1, xmax=1.1, ymin=-1.1, ymax=1.1)
-        #animation.show()
+# print(point(self.listeDeplacement[k]))
+#animation = animate([point(j) for j in self.listeDeplacement[0]], xmin=-1.1, xmax=1.1, ymin=-1.1, ymax=1.1)
+#animation.show()
 
 
 # création des pendules
