@@ -1,6 +1,18 @@
 from tkinter import *
 import time
-import Pendule
+
+def multiplication(MatriceA, MatriceB):
+    matriceC = [[0] * (len(MatriceB[0]))]
+
+    if len(MatriceA) != len(MatriceB[0]):
+        print('Impossible de multiplier les deux matrices')
+        return
+
+    for i in range(len(MatriceB)):
+        for j in range(len(MatriceA[0])):
+            for k in range(len(MatriceA)):
+                matriceC[i][j] += MatriceB[i][k] * MatriceA[j][k]
+    return matriceC
 class Display():
     def __init__(self):
         self.main = Tk()
@@ -26,21 +38,18 @@ class Display():
         for i in range(0,maxLenght):
             for p in range(0, len(simulation.pendules)):
                 if(i<len(simulation.listeDeplacement[p])):
-
-                    translation = [[1, 0, 0.01],
-                                   [0, 1, 0.01],
+                    #A*C+B*C = (A+B)*C  La multiplication matricielle est distributive sur l'addition
+                    translation = [[self.zoom, 0, self.decalageX],
+                                   [0, self.zoom, self.decalageY],
                                    [0, 0, 1]]
-                    position = Pendule.multiplication(translation, simulation.listeDeplacement[p][i])
-
+                    position = multiplication(translation, [simulation.listeDeplacement[p][i]])[0]
+                    print(position)
+                    print( simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX)
                     #afficher le point du pendule au centre du coordonné si le temps
-                    self.createOval((simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX-self.size)
-                                    + position[0],
-                                    (-simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY-self.size)
-                                    + position[1],
-                                    (simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX + self.size)
-                                    + position[0],
-                                    (-simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY + self.size)
-                                    + position[1],
+                    self.createOval(simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX-self.size,
+                                    -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY-self.size,
+                                    simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX + self.size,
+                                    -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY + self.size,
                                     simulation.pendules[p].color
                                     )
 
