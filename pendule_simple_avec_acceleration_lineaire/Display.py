@@ -7,11 +7,12 @@ class Display():
         self.height = 800
         self.decalageX = self.width * 0.5
         self.decalageY = self.height * 0.75
-        self.size = 15
-        self.zoom = 300
+        self.size = 20
+        self.zoom = 200
         self.objectAffiche = []
 
-        self.main.geometry("1200x800+220+100")
+        self.main.geometry("1200x800")
+
         self.main.title("Pendule")
         self.canvas = Canvas(self.main, width=self.width, height=self.height)
         self.canvas.pack()

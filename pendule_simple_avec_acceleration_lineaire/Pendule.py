@@ -7,10 +7,11 @@ def createTranslation(tx, ty) :
     return matrice
 
 class Pendule:
-    def __init__(self, name, g, l, theta, masse,color, origine='not defined'):
+    def __init__(self, name, g, l, theta, masse,color,k, origine='not defined'):
         self.name = name
         self.g = g
         self.l = l
+        self.k = k
         self.theta = theta
         self.masse = masse
         self.T = 2 * pi * sqrt(self.l / self.g) * (1 + (self.theta * self.theta) / 16)
@@ -72,14 +73,14 @@ class Pendule:
 
         # premiere position
         liste = [[self.origine[0]+sin(actualTheta) * self.l, (self.l - cos(actualTheta)) * self.l, 1]]
-        if (liste[len(liste) - 1][0] > 0):   #initialise pendule à droite du coté opposé
+        if (liste[len(liste) - 1][0] > self.origine[0]):   #initialise le booléen :(pendule à droite) du coté opposé
             penduleADroite = 0
         else:
             penduleADroite = 1
         while (abs(upperPreviousTheta - upperTheta) > 0.01):
             print(self.name)
             # BLOC ALLER
-            if (liste[len(liste) - 1][0] > 0):
+            if (liste[len(liste) - 1][0] > self.origine[0]):
                 if(penduleADroite):
                     break
                 penduleADroite = 1
@@ -93,7 +94,7 @@ class Pendule:
             temps = tempsEntreImages
             vitesse = 0
             while (1) :
-                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (0.1/ (self.masse * (
+                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (self.k/ (self.masse * (
                         self.l * self.l))) * vitesse) * tempsEntreImages)  # la valeur en dur est k le coefficient de frottement
                 actualTheta += vitesse * tempsEntreImages
                 delta = actualTheta - previousTheta
