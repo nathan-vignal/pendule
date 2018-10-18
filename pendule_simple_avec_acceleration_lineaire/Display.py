@@ -1,5 +1,6 @@
 from tkinter import *
 import time
+import Pendule
 class Display():
     def __init__(self):
         self.main = Tk()
@@ -25,11 +26,21 @@ class Display():
         for i in range(0,maxLenght):
             for p in range(0, len(simulation.pendules)):
                 if(i<len(simulation.listeDeplacement[p])):
+
+                    translation = [[1, 0, 0.01],
+                                   [0, 1, 0.01],
+                                   [0, 0, 1]]
+                    position = Pendule.multiplication(translation, simulation.listeDeplacement[p][i])
+
                     #afficher le point du pendule au centre du coordonné si le temps
-                    self.createOval(simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX-self.size,
-                                    -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY-self.size,
-                                    simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX + self.size,
-                                    -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY + self.size,
+                    self.createOval((simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX-self.size)
+                                    + position[0],
+                                    (-simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY-self.size)
+                                    + position[1],
+                                    (simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX + self.size)
+                                    + position[0],
+                                    (-simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY + self.size)
+                                    + position[1],
                                     simulation.pendules[p].color
                                     )
 
