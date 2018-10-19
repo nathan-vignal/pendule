@@ -11,10 +11,10 @@ class Pendule:
         self.name = name
         self.g = g
         self.l = l
-        self.k = k
+        self.k = 6*pi*(1/1000)*5 #6*pi*(coeffvisqositémillieu)*rayonboule
         self.theta = theta
         self.masse = masse
-        self.T = 2 * pi * sqrt(self.l / self.g) * (1 + (self.theta * self.theta) / 16)
+        self.T = 2 * pi * sqrt(self.l / self.g) * (1 + (self.theta * self.theta) / 16) # formule borda
         self.color = color
         if origine == 'not defined':  # permet un parametre par défaut pour origine en fonction de l
             self.origine = (0, l)
@@ -70,7 +70,7 @@ class Pendule:
         previousTheta = actualTheta
         upperTheta = actualTheta
         upperPreviousTheta = 9999
-
+        #le pendule est trop à gauche
         # premiere position
         liste = [[self.origine[0]+sin(actualTheta) * self.l, (self.l - cos(actualTheta)) * self.l, 1]]
         if (liste[len(liste) - 1][0] > self.origine[0]):   #initialise le booléen :(pendule à droite) du coté opposé
@@ -78,8 +78,8 @@ class Pendule:
         else:
             penduleADroite = 1
         while (abs(upperPreviousTheta - upperTheta) > 0.01):
-            print(self.name)
             # BLOC ALLER
+            print(liste[len(liste)-1])
             if (liste[len(liste) - 1][0] > self.origine[0]):
                 if(penduleADroite):
                     break
@@ -94,8 +94,8 @@ class Pendule:
             temps = tempsEntreImages
             vitesse = 0
             while (1) :
-                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (self.k/ (self.masse * (
-                        self.l * self.l))) * vitesse) * tempsEntreImages)  # la valeur en dur est k le coefficient de frottement
+                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (self.k/ (self.masse )) * vitesse) * tempsEntreImages)  # la valeur en dur est k le coefficient de frottement
+
                 actualTheta += vitesse * tempsEntreImages
                 delta = actualTheta - previousTheta
                 previousTheta = actualTheta
@@ -111,4 +111,5 @@ class Pendule:
 
 
         # FIN BLOC ALLER
+        print(len(liste))
         return liste

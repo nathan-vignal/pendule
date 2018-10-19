@@ -37,18 +37,31 @@ class Display():
 
         for i in range(0,maxLenght):
             for p in range(0, len(simulation.pendules)):
+
                 if(i<len(simulation.listeDeplacement[p])):
+                    ''''
                     #A*C+B*C = (A+B)*C  La multiplication matricielle est distributive sur l'addition
                     translation = [[self.zoom, 0, self.decalageX],
                                    [0, self.zoom, self.decalageY],
                                    [0, 0, 1]]
                     position = multiplication(translation, [simulation.listeDeplacement[p][i]])[0]
                     print(position)
+                    translation = [[1, 0, -self.size],
+                                   [0, 1, -self.size],
+                                   [0, 0, 1]]
+                    positiondroite = multiplication(translation, position)[0]
+                    translation = [[1, 0, self.size],
+                                   [0, 1, self.size],
+                                   [0, 0, 1]]
+                    positiongauche= multiplication(translation, position)[0]
                     print( simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX)
+                    print(position + position)'''
                     #afficher le point du pendule au centre du coordonné si le temps
+
+
                     self.createOval(simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX-self.size,
                                     -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY-self.size,
-                                    simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX + self.size,
+                                    simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX +1.5* self.size,
                                     -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY + self.size,
                                     simulation.pendules[p].color
                                     )
@@ -79,7 +92,7 @@ class Display():
 
     def afficherImage(self,simulation):
         self.canvas.update()
-        time.sleep(0.01)
+        time.sleep(0.1)
         for i in range(0, len(self.objectAffiche), 1):
             self.canvas.delete(self.objectAffiche[i])
         self.objectAffiche = []
