@@ -11,7 +11,7 @@ class Pendule:
         self.name = name
         self.g = g
         self.l = l
-        self.k = 6*pi*(1/1000)*5 #6*pi*(coeffvisqositémillieu)*rayonboule
+        self.k = 6*pi*(1/1000)*50        #6*pi*(coeffvisqositémillieu)*rayonboule
         self.theta = theta
         self.masse = masse
         self.T = 2 * pi * sqrt(self.l / self.g) * (1 + (self.theta * self.theta) / 16) # formule borda
@@ -27,6 +27,7 @@ class Pendule:
         print('l = ' + str(self.l))
         print('theta = ' + str(self.theta))
         print('masse = ' + str(self.masse) + 'Kg')
+        print('k = ' + str(self.k))
         print
         print
 
@@ -47,7 +48,6 @@ class Pendule:
 
     def rotate(self, t, dernierCoordonne,):
         # parametre
-
         translation = [[1, 0, -self.origine[0]],
                        [0, 1, -self.origine[1]],
                        [0, 0, 1]]
@@ -79,7 +79,6 @@ class Pendule:
             penduleADroite = 1
         while (abs(upperPreviousTheta - upperTheta) > 0.01):
             # BLOC ALLER
-            print(liste[len(liste)-1])
             if (liste[len(liste) - 1][0] > self.origine[0]):
                 if(penduleADroite):
                     break
@@ -93,8 +92,11 @@ class Pendule:
             actualTheta = upperTheta
             temps = tempsEntreImages
             vitesse = 0
+            i=0
             while (1) :
-                vitesse += ((-((self.g / self.l) * sin(actualTheta)) - (self.k/ (self.masse )) * vitesse) * tempsEntreImages)  # la valeur en dur est k le coefficient de frottement
+
+                vitesse += (-((self.g / self.l) * sin(actualTheta)) - (self.k/ (self.masse * (
+                        self.l * self.l))) * vitesse) * tempsEntreImages  # la valeur en dur est k le coefficient de frottement
 
                 actualTheta += vitesse * tempsEntreImages
                 delta = actualTheta - previousTheta

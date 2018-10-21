@@ -9,7 +9,7 @@ mars = Pendule.Pendule('mars', 3.711, 1, pi / 2, 1,"red",0.05)
 lune = Pendule.Pendule('lune', 1.62, 1, pi / 2, 1,"white",0.05)
 
 # création de la simulation
-simulation = Simulation.Simulation([terre], 0.1)
+simulation = Simulation.Simulation([terre], 0.01)
 
 simulation.recap()
 simulation.simulate()

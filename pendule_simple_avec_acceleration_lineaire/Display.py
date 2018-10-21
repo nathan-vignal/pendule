@@ -3,7 +3,6 @@ import time
 
 def multiplication(MatriceA, MatriceB):
     matriceC = [[0] * (len(MatriceB[0]))]
-
     if len(MatriceA) != len(MatriceB[0]):
         print('Impossible de multiplier les deux matrices')
         return
@@ -39,42 +38,45 @@ class Display():
             for p in range(0, len(simulation.pendules)):
 
                 if(i<len(simulation.listeDeplacement[p])):
-                    ''''
                     #A*C+B*C = (A+B)*C  La multiplication matricielle est distributive sur l'addition
                     translation = [[self.zoom, 0, self.decalageX],
-                                   [0, self.zoom, self.decalageY],
+                                   [0, -self.zoom, self.decalageY],
                                    [0, 0, 1]]
-                    position = multiplication(translation, [simulation.listeDeplacement[p][i]])[0]
-                    print(position)
+
+
+                    position = multiplication(translation, [simulation.listeDeplacement[p][i]])
+
                     translation = [[1, 0, -self.size],
                                    [0, 1, -self.size],
                                    [0, 0, 1]]
-                    positiondroite = multiplication(translation, position)[0]
+                    positiondroite = multiplication(translation, position)
                     translation = [[1, 0, self.size],
                                    [0, 1, self.size],
                                    [0, 0, 1]]
-                    positiongauche= multiplication(translation, position)[0]
-                    print( simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX)
-                    print(position + position)'''
+                    positiongauche = multiplication(translation, position)
                     #afficher le point du pendule au centre du coordonné si le temps
 
-
-                    self.createOval(simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX-self.size,
-                                    -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY-self.size,
-                                    simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX +1.5* self.size,
-                                    -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY + self.size,
+                    self.createOval(positiongauche[0][0],
+                                    positiongauche[0][1],
+                                    positiondroite[0][0],
+                                    positiondroite[0][1],
                                     simulation.pendules[p].color
                                     )
 
+                    origine = [simulation.pendules[p].origine[0], simulation.pendules[p].origine[1], 1]
+                    translation = [[self.zoom, 0, self.decalageX],
+                                   [0, -self.zoom, self.decalageY],
+                                   [0, 0, 1]]
+                    origine = multiplication(translation, [origine])
                     self.createLine(
-                        ((simulation.pendules[p].origine[0] * self.zoom + self.decalageX) + (simulation.pendules[p].origine[0] * self.zoom + self.size / 2 + self.decalageX)) / 2
+                        origine[0][0]
                         # moyenne entre les opposé de l'elipse pour avoir le centre
                         ,
-                        ((-simulation.pendules[p].origine[1] * self.zoom + self.decalageY) + (-simulation.pendules[p].origine[1] * self.zoom + self.size / 2 + self.decalageY)) / 2
+                        origine[0][1]
                         ,
-                        simulation.listeDeplacement[p][i][0] * self.zoom + self.decalageX
+                        position[0][0]
                         ,
-                        -simulation.listeDeplacement[p][i][1] * self.zoom + self.decalageY
+                        position[0][1]
                         ,
                         simulation.pendules[p].color )
             if(i==0):
@@ -92,7 +94,7 @@ class Display():
 
     def afficherImage(self,simulation):
         self.canvas.update()
-        time.sleep(0.1)
+        time.sleep(0.01)
         for i in range(0, len(self.objectAffiche), 1):
             self.canvas.delete(self.objectAffiche[i])
         self.objectAffiche = []
@@ -107,12 +109,25 @@ class Display():
 
     def affichageDesCentres(self, simulation):
         for k in range(0, len(simulation.pendules), 1): #affichage des fixations
-            origineX = simulation.pendules[k].origine[0]
-            origineY = simulation.pendules[k].origine[1]
-            fixation = self.canvas.create_oval(origineX*self.zoom +self.decalageX,
-                                               -origineY*self.zoom +self.decalageY,
-                                               origineX*self.zoom+self.size/2 +self.decalageX,
-                                               -origineY*self.zoom+self.size/2 +self.decalageY,
+            origine = [simulation.pendules[k].origine[0],simulation.pendules[k].origine[1],1]
+            translation = [[self.zoom, 0, self.decalageX],
+                           [0, -self.zoom, self.decalageY],
+                           [0, 0, 1]]
+            origine = multiplication(translation,[origine])
+            print(origine)
+            translation = [[1, 0, -self.size/3],
+                           [0, 1, -self.size/3],
+                           [0, 0, 1]]
+            originegauche = multiplication(translation,origine)
+            translation = [[1, 0, self.size / 3],
+                           [0, 1, self.size / 3],
+                           [0, 0, 1]]
+            originedroite = multiplication(translation, origine)
+
+            fixation = self.canvas.create_oval(originegauche[0][0],
+                                               originegauche[0][1],
+                                               originedroite[0][0],
+                                               originedroite[0][1],
                                                fill=simulation.pendules[k].color
                                                )
             self.canvas.update()
