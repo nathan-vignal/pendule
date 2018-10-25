@@ -16,8 +16,7 @@ def getextreme(liste, getMin):
             extremum = valeur
 
     return extremum
-
-class Pendule:
+class Pendule :
     def __init__(self, name, g, l, theta, masse,color,k, origine='not defined'):
         self.name = name
         self.g = g
