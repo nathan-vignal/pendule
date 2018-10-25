@@ -5,6 +5,8 @@ def multiplication(MatriceA, MatriceB):
     matriceC = [[0] * (len(MatriceB[0]))]
     if len(MatriceA) != len(MatriceB[0]):
         print('Impossible de multiplier les deux matrices')
+        print('Matrice A = ' + str(MatriceA))
+        print('Matrice B = ' + str(MatriceB))
         return
 
     for i in range(len(MatriceB)):
@@ -23,7 +25,9 @@ class Display():
         self.zoom = 300
         self.objectAffiche = []
 
-        self.graphique = Graphique.Graphique([self.width-300, 140], 280, 135,2) #(self,origine,tailleX,tailleY):
+        self.graphique = Graphique.Graphique([self.width-300, 120], 280, 119,2) #(self,origine,tailleX,tailleY):
+        self.listeGraphique = []
+
 
 
         self.main.geometry("1200x800")
@@ -37,18 +41,21 @@ class Display():
         self.affichageDesCentres(simulation)
         self.afficherAxes(simulation)
         maxLenght = self.maxLenght(simulation)
+
+        for p in range(0, len(simulation.pendules)):
+            self.listeGraphique.append([])
         ###################################################################################
         self.deltaExtremum = 0
         for p in range(0, len(simulation.pendules)):
             if(simulation.pendules[p].deltaExtremum > self.deltaExtremum):
                 self.deltaExtremum = simulation.pendules[p].deltaExtremum
-        print(self.deltaExtremum)
+
 
         self.valeurGraphMin = 9999
         for p in range(0, len(simulation.pendules)):
             if(simulation.pendules[p].valeurGraphMin < self.valeurGraphMin):
                 self.valeurGraphMin = simulation.pendules[p].valeurGraphMin
-        print(self.valeurGraphMin)
+
         ###################################################################################
 
         for i in range(0,maxLenght):
@@ -99,7 +106,8 @@ class Display():
                     self.animerGraphique(simulation,i,p)
             if(i==0):
                 time.sleep(1)
-            self.afficherImage(simulation)
+                tempsPrecedent = time.time()
+            tempsPrecedent = self.afficherImage(simulation.tempsEntreImages,i,tempsPrecedent)
 
 
 
@@ -110,12 +118,17 @@ class Display():
         #on affiche tout
         self.main.mainloop()
 
-    def afficherImage(self,simulation):
+    def afficherImage(self,tempsEntreImage,i,tempsPrecedent):
         self.canvas.update()
-        time.sleep(0.01)
+
+        time.sleep(tempsEntreImage - (time.time() - tempsPrecedent) )
+        print(tempsEntreImage - (time.time() - tempsPrecedent))
+        tempsPrecedent = time.time()
+
         for i in range(0, len(self.objectAffiche), 1):
             self.canvas.delete(self.objectAffiche[i])
         self.objectAffiche = []
+        return tempsPrecedent
 
     def createOval(self,x,y,i,j,color):
         point = self.canvas.create_oval(x, y, i, j,fill=color)
@@ -193,8 +206,8 @@ class Display():
         indice = i
         nombrePoints = self.graphique.deltaT/simulation.tempsEntreImages
         distanceEntrePoints = self.graphique.tailleX/nombrePoints
-        listePoint = []
-        translationEntrePoints = [[1, 0, distanceEntrePoints],
+
+        translationEntrePoints = [[1, 0, -distanceEntrePoints],
                                   [0, 1, 0],
                                   [0, 0, 1]]
         premierPoint = [[1,1,1]]
@@ -206,22 +219,29 @@ class Display():
 
         self.superCreateOval(premierPoint[0]
                              ,premierPoint[1]
-                             ,3
-                             ,"black")
+                             ,2
+                             ,simulation.pendules[p].color)
         ################
 
         self.createText(self.graphique.origine[0]-30,self.graphique.origine[1]+p*20,round(simulation.pendules[p].listeGraph[indice],3),simulation.pendules[p].color)
         #id = C.create_text(x, y, option, ...)
         ############
+        indice -= 1
+        self.listeGraphique[p].append(premierPoint)
 
-
-
-        listePoint.append(premierPoint)
-
-        while(indice>0 and self.graphique.deltaT > (i-indice)*simulation.tempsEntreImages):
-
+        while(indice>=0 and self.graphique.deltaT > (i-indice)*simulation.tempsEntreImages):
+            self.listeGraphique[p][i-indice] = multiplication(translationEntrePoints,[self.listeGraphique[p][i-indice]])[0]
+            self.superCreateOval(self.listeGraphique[p][i-indice][0],self.listeGraphique[p][i-indice][1],2,simulation.pendules[p].color)
+            #(self, x, y,size, color)
 
             indice -= 1
+        if(len(self.listeGraphique[p])>nombrePoints):
+            self.listeGraphique[p].pop(0)
+
+
+
+
+
 
 
 

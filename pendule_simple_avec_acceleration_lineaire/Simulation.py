@@ -23,7 +23,7 @@ class Simulation:
     def simulate(self):
         for j in range(0, len(self.pendules), 1):
             self.listeDeplacement.append(self.pendules[j].simulate(self.tempsEntreImages))
-            print(self.pendules[j].listeGraph)
+
 
     def show(self):
 
