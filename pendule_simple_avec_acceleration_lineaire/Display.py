@@ -32,11 +32,24 @@ class Display():
         self.canvas = Canvas(self.main, width=self.width, height=self.height)
         self.canvas.pack()
 
-    ###################################################################################
+
     def display(self, simulation):
         self.affichageDesCentres(simulation)
-        self.afficherAxes()
+        self.afficherAxes(simulation)
         maxLenght = self.maxLenght(simulation)
+        ###################################################################################
+        self.deltaExtremum = 0
+        for p in range(0, len(simulation.pendules)):
+            if(simulation.pendules[p].deltaExtremum > self.deltaExtremum):
+                self.deltaExtremum = simulation.pendules[p].deltaExtremum
+        print(self.deltaExtremum)
+
+        self.valeurGraphMin = 9999
+        for p in range(0, len(simulation.pendules)):
+            if(simulation.pendules[p].valeurGraphMin < self.valeurGraphMin):
+                self.valeurGraphMin = simulation.pendules[p].valeurGraphMin
+        print(self.valeurGraphMin)
+        ###################################################################################
 
         for i in range(0,maxLenght):
             for p in range(0, len(simulation.pendules)):
@@ -125,6 +138,9 @@ class Display():
     def createLine(self,x,y,i,j,color):
         ligne = self.canvas.create_line(x, y, i, j)
         self.objectAffiche.append(ligne)
+    def createText(self,x,y,text,color):
+        texte = self.canvas.create_text(x,y,text=text,fill=color)
+        self.objectAffiche.append(texte)
 
     def affichageDesCentres(self, simulation):
         for k in range(0, len(simulation.pendules), 1): #affichage des fixations
@@ -159,14 +175,18 @@ class Display():
             if (len(simulation.listeDeplacement[k]) > maxLenght):
                 maxLenght = len(simulation.listeDeplacement[k])
         return maxLenght
-    def afficherAxes(self):
+    ###########################################################################
+    def afficherAxes(self,simulation):
          self.canvas.create_line(self.graphique.origine[0],self.graphique.origine[1],self.graphique.origine[0], (self.graphique.origine[1]-self.graphique.tailleY),fill='black')# créer la verticale
 
-         self.canvas.create_line(self.graphique.origine[0], self.graphique.origine[1], self.graphique.origine[0]+self.graphique.tailleX,
-                                        self.graphique.origine[1],
-                                        fill='black')  # créer l'horizontal
-         self.canvas.update()
 
+         self.canvas.create_line(self.graphique.origine[0], self.graphique.origine[1]-self.graphique.tailleY/2, self.graphique.origine[0]+self.graphique.tailleX,
+                                        self.graphique.origine[1]-self.graphique.tailleY/2,
+                                        fill='black',)  # créer l'horizontal
+
+         # créer axe valeur millieu
+         self.canvas.update()
+    ###########################################################################
     def animerGraphique(self, simulation,i,p):
 
 
@@ -178,7 +198,7 @@ class Display():
                                   [0, 1, 0],
                                   [0, 0, 1]]
         premierPoint = [[1,1,1]]
-        ratioValeurValeurMax = (simulation.pendules[p].listeGraph[indice] - simulation.pendules[p].valeurGraphMin)/simulation.pendules[p].deltaExtremum
+        ratioValeurValeurMax = (simulation.pendules[p].listeGraph[indice] - simulation.pendules[p].valeurGraphMin)/self.deltaExtremum
         translation = [[0, 0, self.graphique.origine[0] +self.graphique.tailleX-(distanceEntrePoints *(indice -i))],
                        [0, 0, self.graphique.origine[1] - self.graphique.tailleY*ratioValeurValeurMax],
                        [0, 0, 1]]
@@ -188,11 +208,21 @@ class Display():
                              ,premierPoint[1]
                              ,3
                              ,"black")
+        ################
+
+        self.createText(self.graphique.origine[0]-30,self.graphique.origine[1]+p*20,round(simulation.pendules[p].listeGraph[indice],3),simulation.pendules[p].color)
+        #id = C.create_text(x, y, option, ...)
+        ############
+
+
+
         listePoint.append(premierPoint)
-        while(indice>0 and self.graphique.deltaT > -(indice-i)*simulation.tempsEntreImages):
-            #COME BACK HERE LISTEPOINT
+
+        while(indice>0 and self.graphique.deltaT > (i-indice)*simulation.tempsEntreImages):
+
 
             indice -= 1
+
 
 
 

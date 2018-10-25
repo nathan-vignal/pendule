@@ -81,19 +81,22 @@ class Pendule:
 
     def simulate(self, tempsEntreImages, ):  # but : renvoyer une liste avec les positions en fonctions du temps
 
+
         actualTheta = self.theta
         previousTheta = actualTheta
         upperTheta = actualTheta
         upperPreviousTheta = 9999
         #le pendule est trop à gauche
         # premiere position
-        liste = [[self.origine[0]+sin(actualTheta) * self.l, (self.l - cos(actualTheta)) * self.l, 1]]
+        liste = [[self.origine[0]+sin(actualTheta) , (self.origine[1] - cos(actualTheta)) , 1]]
+        print(liste)
         if (liste[len(liste) - 1][0] > self.origine[0]):   #initialise le booléen :(pendule à droite) du coté opposé
             penduleADroite = 0
         else:
             penduleADroite = 1
         while (abs(upperPreviousTheta - upperTheta) > 0.01):
             # BLOC ALLER
+            print(upperTheta)
             if (liste[len(liste) - 1][0] > self.origine[0]):
                 if(penduleADroite):
                     break
@@ -130,7 +133,6 @@ class Pendule:
 
 
         # FIN BLOC ALLER
-        print(len(liste))
         self.valeurGraphMin = getextreme(self.listeGraph, 1)
         self.valeurGraphMax = getextreme(self.listeGraph, 0)
         self.deltaExtremum = self.valeurGraphMax - self.valeurGraphMin
