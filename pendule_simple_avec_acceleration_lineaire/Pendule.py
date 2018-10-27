@@ -22,7 +22,7 @@ class Pendule:
         self.name = name
         self.g = g
         self.l = l
-        self.k = round(6*pi*(1/1000)*50,4)        #6*pi*(coeffvisqositémillieu)*rayonboule
+        self.k = k #round(6*pi*(1/1000)*50,4)        #6*pi*(coeffvisqositémillieu)*rayonboule
         self.theta = round(theta,4)
         self.masse = masse
         self.T = 2 * pi * sqrt(self.l / self.g) * (1 + (self.theta * self.theta) / 16) # formule borda
@@ -88,7 +88,7 @@ class Pendule:
         upperPreviousTheta = 9999
         #le pendule est trop à gauche
         # premiere position
-        liste = [[self.origine[0]+ sin(actualTheta) , (self.origine[1] - cos(actualTheta)) , 1]]
+        liste = [[self.origine[0]+ sin(actualTheta)* self.l , (self.origine[1] - cos(actualTheta)* self.l) , 1]]
         self.listeGraph.append(0)
         if (liste[len(liste) - 1][0] > self.origine[0]):   #initialise le booléen :(pendule à droite) du coté opposé
             penduleADroite = 0
@@ -120,7 +120,8 @@ class Pendule:
                 previousTheta = actualTheta
 
                 temps += tempsEntreImages
-                if (not (((vitesse <= -0.5*tempsEntreImages) and penduleADroite) or ((vitesse > 0.5*tempsEntreImages) and (not penduleADroite)))):
+                print(vitesse)
+                if (not (((vitesse <= -0.5*tempsEntreImages/self.l) and penduleADroite) or ((vitesse > 0.5*tempsEntreImages/self.l) and (not penduleADroite)))):
                     upperTheta = actualTheta
                     break
                 else:

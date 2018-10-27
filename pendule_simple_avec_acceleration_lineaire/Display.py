@@ -21,12 +21,17 @@ class Display():
         self.height = 800
         self.decalageX = self.width * 0.5
         self.decalageY = self.height * 0.75
-        self.size = 20
-        self.zoom = 300
+        self.zoom = 200
+        self.size = self.zoom /20
+
         self.objectAffiche = []
 
         self.graphique = Graphique.Graphique([self.width-300, 120], 280, 119,2) #(self,origine,tailleX,tailleY):
         self.listeGraphique = []
+
+        self.valeurGraphMax = -9999
+        self.valeurGraphMin = 9999
+        self.deltaExtremum = 0
 
 
 
@@ -38,32 +43,46 @@ class Display():
 
 
     def display(self, simulation):
-        self.affichageDesCentres(simulation)
-        self.afficherAxes(simulation)
-        maxLenght = self.maxLenght(simulation)
+
 
         for p in range(0, len(simulation.pendules)):
             self.listeGraphique.append([])
-        ###################################################################################
-        self.deltaExtremum = 0
+
+
         for p in range(0, len(simulation.pendules)):
             if(simulation.pendules[p].deltaExtremum > self.deltaExtremum):
                 self.deltaExtremum = simulation.pendules[p].deltaExtremum
 
 
-        self.valeurGraphMin = 9999
+
         for p in range(0, len(simulation.pendules)):
             if(simulation.pendules[p].valeurGraphMin < self.valeurGraphMin):
                 self.valeurGraphMin = simulation.pendules[p].valeurGraphMin
 
-        ###################################################################################
+
+        for p in range(0, len(simulation.pendules)):
+            if (simulation.pendules[p].valeurGraphMax > self.valeurGraphMax):
+                self.valeurGraphMax = simulation.pendules[p].valeurGraphMax
+
+        self.affichageDesCentres(simulation)
+        self.afficherAxes(simulation)
+        maxLenght = self.maxLenght(simulation)
+
+
+
+
+
 
         for i in range(0,maxLenght):
             for p in range(0, len(simulation.pendules)):
 
                 if(i<len(simulation.listeDeplacement[p])):
-                    #A*C+B*C = (A+B)*C  La multiplication matricielle est distributive sur l'addition
-                    translation = [[self.zoom, 0, self.decalageX],
+                    self.createText(self.graphique.origine[0]+self.graphique.tailleX-20,
+                                    self.graphique.origine[1] +20,
+                                    round(i* simulation.tempsEntreImages,3),
+                                    'black')
+
+                    translation = [[self.zoom, 0, self.decalageX],#A*C+B*C = (A+B)*C  La multiplication matricielle est distributive sur l'addition
                                    [0, -self.zoom, self.decalageY],
                                    [0, 0, 1]]
 
@@ -120,9 +139,7 @@ class Display():
 
     def afficherImage(self,tempsEntreImage,i,tempsPrecedent):
         self.canvas.update()
-
         time.sleep(tempsEntreImage - (time.time() - tempsPrecedent) )
-        print(tempsEntreImage - (time.time() - tempsPrecedent))
         tempsPrecedent = time.time()
 
         for i in range(0, len(self.objectAffiche), 1):
@@ -173,11 +190,11 @@ class Display():
             originedroite = multiplication(translation, origine)
 
             self.canvas.create_oval(originegauche[0][0],
-                                               originegauche[0][1],
-                                               originedroite[0][0],
-                                               originedroite[0][1],
-                                               fill=simulation.pendules[k].color
-                                               )
+                                    originegauche[0][1],
+                                    originedroite[0][0],
+                                    originedroite[0][1],
+                                    fill=simulation.pendules[k].color
+                                    )
             self.canvas.update()
 
 
@@ -190,15 +207,15 @@ class Display():
         return maxLenght
     ###########################################################################
     def afficherAxes(self,simulation):
-         self.canvas.create_line(self.graphique.origine[0],self.graphique.origine[1],self.graphique.origine[0], (self.graphique.origine[1]-self.graphique.tailleY),fill='black')# créer la verticale
+        self.canvas.create_line(self.graphique.origine[0],self.graphique.origine[1],self.graphique.origine[0], (self.graphique.origine[1]-self.graphique.tailleY),fill='black')# créer la verticale
 
-
-         self.canvas.create_line(self.graphique.origine[0], self.graphique.origine[1]-self.graphique.tailleY/2, self.graphique.origine[0]+self.graphique.tailleX,
-                                        self.graphique.origine[1]-self.graphique.tailleY/2,
-                                        fill='black',)  # créer l'horizontal
-
-         # créer axe valeur millieu
-         self.canvas.update()
+        print(self.deltaExtremum)
+        self.canvas.create_line(self.graphique.origine[0], self.graphique.origine[1] - self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum), self.graphique.origine[0]+self.graphique.tailleX,
+                                self.graphique.origine[1] - self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum), # lire (0- self.valeurGraphMin / self.deltaExtremum) -> le ratio que vaut la valeur 0
+                                fill='black',)  # créer l'horizontal
+        self.canvas.create_text(self.graphique.origine[0]-40, self.graphique.origine[1]-self.graphique.tailleY+10,text='max = ' + str(round(self.valeurGraphMax,2))+'m/s' ,fill="black")
+        #texte = self.canvas.create_text(x, y, text=text, fill=color)
+        self.canvas.update()
     ###########################################################################
     def animerGraphique(self, simulation,i,p):
 
@@ -211,7 +228,7 @@ class Display():
                                   [0, 1, 0],
                                   [0, 0, 1]]
         premierPoint = [[1,1,1]]
-        ratioValeurValeurMax = (simulation.pendules[p].listeGraph[indice] - simulation.pendules[p].valeurGraphMin)/self.deltaExtremum
+        ratioValeurValeurMax = (simulation.pendules[p].listeGraph[indice] - self.valeurGraphMin)/self.deltaExtremum
         translation = [[0, 0, self.graphique.origine[0] +self.graphique.tailleX-(distanceEntrePoints *(indice -i))],
                        [0, 0, self.graphique.origine[1] - self.graphique.tailleY*ratioValeurValeurMax],
                        [0, 0, 1]]
@@ -221,11 +238,14 @@ class Display():
                              ,premierPoint[1]
                              ,2
                              ,simulation.pendules[p].color)
-        ################
 
-        self.createText(self.graphique.origine[0]-30,self.graphique.origine[1]+p*20,round(simulation.pendules[p].listeGraph[indice],3),simulation.pendules[p].color)
-        #id = C.create_text(x, y, option, ...)
-        ############
+
+        self.createText(self.graphique.origine[0]-30,
+                        self.graphique.origine[1]+p*20,
+                        round(simulation.pendules[p].listeGraph[indice],2),
+                        simulation.pendules[p].color)
+
+
         indice -= 1
         self.listeGraphique[p].append(premierPoint)
 
