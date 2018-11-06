@@ -89,7 +89,6 @@ class Pendule:
         #le pendule est trop à gauche
         # premiere position
         liste = [[self.origine[0]+ sin(actualTheta)* self.l , (self.origine[1] - cos(actualTheta)* self.l) , 1]]
-        self.listeGraph.append(0)
         if (liste[len(liste) - 1][0] > self.origine[0]):   #initialise le booléen :(pendule à droite) du coté opposé
             penduleADroite = 0
         else:
@@ -109,7 +108,7 @@ class Pendule:
             actualTheta = upperTheta
             temps = tempsEntreImages
             vitesse = 0
-            i=0
+            i = 0
             while (1) :
 
                 vitesse += (-((self.g / self.l) * sin(actualTheta)) - (self.k/ (self.masse * (
@@ -120,13 +119,13 @@ class Pendule:
                 previousTheta = actualTheta
 
                 temps += tempsEntreImages
-                print(vitesse)
                 if (not (((vitesse <= -0.5*tempsEntreImages/self.l) and penduleADroite) or ((vitesse > 0.5*tempsEntreImages/self.l) and (not penduleADroite)))):
                     upperTheta = actualTheta
                     break
                 else:
                     liste.append(self.rotate(delta, [liste[len(liste) - 1]]))#rajoute l'emplacement actuel du pendule à la liste des positions
-                    self.listeGraph.append(vitesse)
+
+                    self.listeGraph.append( vitesse)
 
         #animation boule
 

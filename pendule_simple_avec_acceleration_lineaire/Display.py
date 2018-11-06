@@ -209,12 +209,12 @@ class Display():
     def afficherAxes(self,simulation):
         self.canvas.create_line(self.graphique.origine[0],self.graphique.origine[1],self.graphique.origine[0], (self.graphique.origine[1]-self.graphique.tailleY),fill='black')# créer la verticale
 
-        print(self.deltaExtremum)
         self.canvas.create_line(self.graphique.origine[0], self.graphique.origine[1] - self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum), self.graphique.origine[0]+self.graphique.tailleX,
                                 self.graphique.origine[1] - self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum), # lire (0- self.valeurGraphMin / self.deltaExtremum) -> le ratio que vaut la valeur 0
                                 fill='black',)  # créer l'horizontal
         self.canvas.create_text(self.graphique.origine[0]-40, self.graphique.origine[1]-self.graphique.tailleY+10,text='max = ' + str(round(self.valeurGraphMax,2))+'m/s' ,fill="black")
-        #texte = self.canvas.create_text(x, y, text=text, fill=color)
+        print(self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum))
+        print(self.valeurGraphMin)
         self.canvas.update()
     ###########################################################################
     def animerGraphique(self, simulation,i,p):
