@@ -28,7 +28,7 @@ class Display():
         self.height = 800 #hauteur de la fenêtre
         self.decalageX = self.width * 0.5    #translation en x de l'origine de la fenêtre
         self.decalageY = self.height * 0.75  #translation en y de l'origine de la fenêtre
-        self.zoom = 200  #dilate les espaces entre les points
+        self.zoom = 20  #dilate les espaces entre les points
         self.size = self.zoom /20   #taille de la masse du pendule
 
         self.objectAffiche = []     # cette liste permet de pouvoir garder un moyen d'accéder à un object affiché
@@ -36,7 +36,7 @@ class Display():
 
 
         # (origine du graphique ,largeur  ,hauteur )
-        self.graphique = Graphique.Graphique([self.width-300, 120], 280, 119,2)
+        self.graphique = Graphique.Graphique([self.width-300, 400], 280, 399,2)
         self.listeGraphique = []    #liste qui va contenir la liste des valeurs de chaque pendule affiché dans le graphique
 
         #pas important
@@ -46,11 +46,12 @@ class Display():
 
 
 
-        self.main.geometry("1200x800")
+        self.main.geometry(str(self.width)+"x"+str(self.height))
         #nom de la fenêtre
         self.main.title("Pendules")
         #création du canvas
         self.canvas = Canvas(self.main, width=self.width, height=self.height)
+        #ignorer
         self.canvas.pack()
 
 
@@ -103,8 +104,8 @@ class Display():
                 if(i<len(simulation.listeDeplacement[p])-1):
 
                     #matrice de translation de pour amener le point au centre de la simulation et appliquer le zoom
-                    translation = [[self.zoom, 0, self.decalageX],#A*C+B*C = (A+B)*C  La multiplication matricielle est distributive sur l'addition
-                                   [0, -self.zoom, self.decalageY],
+                    translation = [[self.zoom, 0, self.decalageX],#A*C+B*C == (A+B)*C  La multiplication matricielle est distributive sur l'addition
+                                   [0, -self.zoom, self.decalageY], #C*A + B*C != (A+B)*C   !!!!
                                    [0, 0, 1]]
                     #simulation.listeDeplacement[p][i]  = la position actuel du pendule p dans la simulation
                     position = multiplication(translation, [simulation.listeDeplacement[p][i]])
@@ -176,18 +177,19 @@ class Display():
         #permet de récupérer le temps précécent plus tard
         return tempsPrecedent
 
+
         #crée un point et l'ajoute aux objets affichés ( liste des objets affiché dans l'image actuelle )
     def createOval(self,x,y,i,j,color):
         point = self.canvas.create_oval(x, y, i, j,fill=color)
         self.objectAffiche.append(point)
 
-        #même chose que la métode juste au dessus mais en délégant les translations à cette fonction
+        #crée un cercle avec pour centre (x,y) et rayon size
     def superCreateOval(self, x, y,size, color):
-        gauche = [x,y,1]
+        centre = [x,y,1]
         translation = [[1, 0, -size],
                        [0, 1, -size],
                        [0, 0, 1]]
-        gauche = multiplication(translation, [gauche])[0]
+        gauche = multiplication(translation, [centre])[0]
         translation = [[1, 0, size],
                        [0, 1, size],
                        [0, 0, 1]]
@@ -209,7 +211,7 @@ class Display():
     def affichageDesCentres(self, simulation):
         for k in range(0, len(simulation.pendules), 1): #affichage des fixations
             origine = [simulation.pendules[k].origine[0],simulation.pendules[k].origine[1],1]
-            translation = [[self.zoom, 0, self.decalageX],
+            translation = [[self.zoom, 0, self.decalageX], # A*(B+C) = A*B + A*C
                            [0, -self.zoom, self.decalageY],
                            [0, 0, 1]]
             origine = multiplication(translation,[origine])
@@ -223,7 +225,7 @@ class Display():
                            [0, 0, 1]]
             originedroite = multiplication(translation, origine)
 
-            self.canvas.create_oval(originegauche[0][0],
+            self.canvas.create_oval(originegauche[0][0],    #[[x,y,1]]
                                     originegauche[0][1],
                                     originedroite[0][0],
                                     originedroite[0][1],
@@ -241,15 +243,16 @@ class Display():
 
     # affiche les axes du graphique
     def afficherAxes(self,simulation):
-        self.canvas.create_line(self.graphique.origine[0],self.graphique.origine[1],self.graphique.origine[0], (self.graphique.origine[1]-self.graphique.tailleY),fill='black')# créer la verticale
-
+        # créer la verticale
+        self.canvas.create_line(self.graphique.origine[0],self.graphique.origine[1],self.graphique.origine[0], (self.graphique.origine[1]-self.graphique.tailleY),fill='black')
+        # créer l'abscisse
         self.canvas.create_line(self.graphique.origine[0], self.graphique.origine[1] - self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum), self.graphique.origine[0]+self.graphique.tailleX,
                                 self.graphique.origine[1] - self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum), # lire (0- self.valeurGraphMin / self.deltaExtremum) -> le ratio que vaut la valeur 0
                                 fill='black',)  # créer l'horizontal
         self.canvas.create_text(self.graphique.origine[0]-40, self.graphique.origine[1]-self.graphique.tailleY+10,text='max = ' + str(round(self.valeurGraphMax,2))+'m/s' ,fill="black")
-        print(self.graphique.tailleY*(- self.valeurGraphMin / self.deltaExtremum))
-        print(self.valeurGraphMin)
+
         self.canvas.update()
+
 
 
     def animerGraphique(self, simulation,i,p):
@@ -266,9 +269,9 @@ class Display():
         ratioValeurValeurMax = (simulation.pendules[p].listeGraph[indice] - self.valeurGraphMin) / self.deltaExtremum
 
         #le premier point est le point de plus à droite du graphique, la valeur actuel du paramètre suivis
-        # petit amusement avec  les matrices de translations au bout de 25 fois ça devient ennuyant
+        # petit amusement avec  les matrices de translations au bout de 25 fois ça devient ennuyant # sert à rien on est d'accord
         premierPoint = [[1,1,1]]
-        translation = [[0, 0, self.graphique.origine[0] +self.graphique.tailleX-(distanceEntrePoints *(indice -i))],
+        translation = [[0, 0, self.graphique.origine[0] +self.graphique.tailleX],
                        [0, 0, self.graphique.origine[1] - self.graphique.tailleY*ratioValeurValeurMax],
                        [0, 0, 1]]
         premierPoint= multiplication(translation, premierPoint)[0]
@@ -276,7 +279,7 @@ class Display():
         #affiche le point le plus à droite
         self.superCreateOval(premierPoint[0]
                              ,premierPoint[1]
-                             ,2
+                             ,3
                              ,simulation.pendules[p].color)
 
         #affiche la valeur du point actuel (en bas à gauche du graphique dans la simulation)
@@ -299,7 +302,7 @@ class Display():
             #- 1 point à translater
             indice -= 1
 
-        #si il ya trop de points affiché supprimer le plus à gauche
+        #supprimer le point qui n'est plus affiché
         if(len(self.listeGraphique[p])>nombrePoints):
             self.listeGraphique[p].pop(0)
 

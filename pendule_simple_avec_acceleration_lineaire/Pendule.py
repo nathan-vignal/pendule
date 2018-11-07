@@ -28,6 +28,7 @@ class Pendule:
         self.k = k #round(6*pi*(1/1000)*50,4)        #6*pi*(coeffvisqositémillieu)*rayonboule
         self.theta = round(theta,4)
         self.masse = masse
+        #période
         self.T = 2 * pi * sqrt(self.l / self.g) * (1 + (self.theta * self.theta) / 16) # formule borda
         self.color = color
         self.listeGraph = []
@@ -141,9 +142,9 @@ class Pendule:
                     #si la vitesse est assé grande on rajoute la position du pendule à la liste des position
                     liste.append(self.rotate(delta, [liste[len(liste) - 1]]))# nouvelle position = ancienne tourné de la différence d'angle entre les deux, par rapport à la fixation
 
-
                     self.listeGraph.append(vitesse)
             ########## fin bloc gérant un aller#############
+        #####fin calcul de position####
 
 
 

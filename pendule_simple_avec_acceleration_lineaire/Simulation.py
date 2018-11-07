@@ -9,7 +9,7 @@ import Graphique
 class Simulation:
 
     def __init__(self, pendules, tempsEntreImages):
-        #liste qui va acceuillier la liste de déplacement de chaque pendule
+        #liste qui va acceuillir la liste de déplacement de chaque pendule
         self.listeDeplacement = []
         #liste des pendules de la simulation
         self.pendules = pendules
@@ -17,7 +17,7 @@ class Simulation:
 
         #on vérifie que pour chaque pendule le temps de faire un aller n'est pas inférieur au temps entre image
         for pendule in pendules:
-            if (pendule.T/2 <= tempsEntreImages or tempsEntreImages <= 0):
+            if (pendule.T/2 <= tempsEntreImages or tempsEntreImages > 0):
                 print('merci de ne pas faire n\'importe quoi et de mettre un temps entre image raisonable')
 
     #affiche les infos des pendules de la simulation
