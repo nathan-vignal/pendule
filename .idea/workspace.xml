@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d65aa877-13c3-4b9f-a365-f6152187ecdb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Pendule.py" beforeDir="false" afterPath="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Pendule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Display.py" beforeDir="false" afterPath="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Display.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Fluide.py" beforeDir="false" afterPath="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Fluide.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,28 +17,28 @@
         <counts>
           <entry key="project.closed" value="1" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.2" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.2" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="2" />
+          <entry key="py" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="2" />
+          <entry key="Python" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="710" />
+          <entry key="py" value="1359" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="710" />
+          <entry key="Python" value="1359" />
         </counts>
       </usages-collector>
     </session>
@@ -48,7 +49,7 @@
         <entry file="file://$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Pendule.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="285">
-              <caret line="19" column="80" selection-start-line="19" selection-start-column="80" selection-end-line="19" selection-end-column="80" />
+              <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -57,13 +58,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Fluide.py">
+        <entry file="file://$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Display.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="35" column="40" lean-forward="true" selection-start-line="35" selection-start-column="40" selection-end-line="35" selection-end-column="40" />
+            <state relative-caret-position="400">
+              <caret line="329" column="11" selection-start-line="329" selection-start-column="11" selection-end-line="329" selection-end-column="11" />
               <folding>
-                <marker date="1540462077018" expanded="true" signature="34:35" ph="..." />
-                <marker date="1540462077018" expanded="true" signature="1381:1383" ph="..." />
+                <element signature="e#0#21#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -86,6 +86,7 @@
       <list>
         <option value="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Pendule.py" />
         <option value="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Fluide.py" />
+        <option value="$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Display.py" />
       </list>
     </option>
   </component>
@@ -95,7 +96,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="20" />
     <option name="y" value="43" />
     <option name="width" value="1400" />
@@ -154,10 +155,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="20" y="43" width="1400" height="784" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="824" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24964234" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -187,23 +188,29 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Fluide.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="23" lean-forward="true" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Pendule.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
-          <caret line="19" column="80" selection-start-line="19" selection-start-column="80" selection-end-line="19" selection-end-column="80" />
+          <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Fluide.py">
+    <entry file="file://$PROJECT_DIR$/pendule_simple_avec_acceleration_lineaire/Display.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="35" column="40" lean-forward="true" selection-start-line="35" selection-start-column="40" selection-end-line="35" selection-end-column="40" />
+        <state relative-caret-position="400">
+          <caret line="329" column="11" selection-start-line="329" selection-start-column="11" selection-end-line="329" selection-end-column="11" />
           <folding>
-            <marker date="1540462077018" expanded="true" signature="34:35" ph="..." />
-            <marker date="1540462077018" expanded="true" signature="1381:1383" ph="..." />
+            <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>

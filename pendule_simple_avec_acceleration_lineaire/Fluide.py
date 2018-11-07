@@ -25,7 +25,6 @@ class Fluide :
             self.h = 1.8 * 10^-5 #viscosité dynamique à 20°
             self.r = 1.2 * 10^-3 #masse volumique  à 20°
 
-
         if (self.name == 'miel') :
 
             self.c = '' # coefficient de frottement solide
